@@ -1,0 +1,10 @@
+{
+    "extends": "./library.tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "./",
+        "baseUrl": "./",
+        "paths": {
+          "@/*": ["./src/*"]
+        }
+    }
+}

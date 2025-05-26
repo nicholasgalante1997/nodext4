@@ -1,0 +1,5 @@
+logLevel = "debug"
+
+[install]
+registry = "https://registry.npmjs.org/"
+

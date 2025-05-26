@@ -1,0 +1,28 @@
+{
+  "name": "@nodext4/root",
+  "type": "module",
+  "repository": {
+    "type": "git"
+  },
+  "engines": {
+    "bun": ">=1.2.4",
+    "node": ">=22.0.0"
+  },
+  "packageManager": "bun@1.2.3",
+  "files": [
+    "lib",
+    "core/**",
+    "packages/**"
+  ],
+  "workspaces": [
+    "core/**",
+    "packages/**"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest",
+    "turbo": "^2.5.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
