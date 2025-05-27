@@ -1,15 +1,4 @@
-# jsext4fs
+# nodext4
 
-To install dependencies:
+> This is a javascript implementation of the linux-kernal spec ext4 filesystem. For more information on the ext4 filesystem, please visit [the linux-kernal docs](https://docs.kernel.org/filesystems/ext4/).
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run lib/index.ts
-```
-
-This project was created using `bun init` in bun v1.2.14. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

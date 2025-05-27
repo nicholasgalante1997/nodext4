@@ -18,8 +18,14 @@
     "core/**",
     "packages/**"
   ],
+  "scripts": {
+    "format": "prettier --write \"**/*.{js,ts}\"",
+    "check-types": "turbo run check-types",
+    "build:workspace": "turbo run build"
+  },
   "devDependencies": {
     "@types/bun": "latest",
+    "prettier": "^3.5.3",
     "turbo": "^2.5.3"
   },
   "peerDependencies": {
