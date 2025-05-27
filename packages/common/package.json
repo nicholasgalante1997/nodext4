@@ -19,9 +19,11 @@
   },
   "devDependencies": {
     "@nodext4/typescript-configs": "workspace:*",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/debug": "^4.1.12"
   },
   "peerDependencies": {
+    "debug": "^4.4.1",
     "typescript": "^5.0.0"
   }
 }

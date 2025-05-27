@@ -1,4 +1,4 @@
-import { BlockSize } from '@nodext4/common-modules';
+import { BlockSizeInBytes } from '@nodext4/common-modules';
 
 /**
  * @class Block
@@ -16,10 +16,10 @@ class Block {
 
   constructor() {
     this.id = Symbol('BlockID');
-    this.data = new ArrayBuffer(BlockSize);
+    this.data = new ArrayBuffer(BlockSizeInBytes);
   }
 
-  readFromBlock(offset: number = 0, length: number = BlockSize): Uint8Array {
+  readFromBlock(offset: number = 0, length: number = BlockSizeInBytes): Uint8Array {
     if (offset < 0 || length <= 0 || offset + length > this.data.byteLength) {
       throw new RangeError('Invalid offset or length for reading from block');
     }
