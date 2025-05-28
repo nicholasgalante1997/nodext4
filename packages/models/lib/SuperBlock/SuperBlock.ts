@@ -839,12 +839,3 @@ abstract class AbstractSuperBlock {
     this.dataview.setBigUint64(0x168, value, true);
   }
 }
-
-class SuperBlock extends AbstractSuperBlock {
-  version = 1.0;
-  parse(): void {
-      
-  }
-
-  
-}

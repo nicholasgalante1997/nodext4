@@ -19,6 +19,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@nodext4/common-modules": "workspace:*"
+    "@nodext4/common-modules": "workspace:*",
+    "chalk": "^5.4.1"
   }
 }
