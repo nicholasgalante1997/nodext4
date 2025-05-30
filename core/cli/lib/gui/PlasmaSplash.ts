@@ -7,8 +7,8 @@ export default class PlasmaSplashAnimation {
   private frames: string[];
   private currentFrame: number;
   private isRunning: boolean;
-    private intervalId: NodeJS.Timeout | null;
-    private colors: { [key: string]: string };
+  private intervalId: NodeJS.Timeout | null;
+  private colors: { [key: string]: string };
   constructor() {
     this.frames = [];
     this.currentFrame = 0;
@@ -33,16 +33,31 @@ export default class PlasmaSplashAnimation {
       brightMagenta: '\x1b[95m',
       brightCyan: '\x1b[96m'
     };
-    
+
     this.initFrames();
   }
 
   initFrames() {
-    const { 
-      reset, bright, dim, red, green, yellow, blue, magenta, cyan, white, gray,
-      brightRed, brightGreen, brightYellow, brightBlue, brightMagenta, brightCyan 
+    const {
+      reset,
+      bright,
+      dim,
+      red,
+      green,
+      yellow,
+      blue,
+      magenta,
+      cyan,
+      white,
+      gray,
+      brightRed,
+      brightGreen,
+      brightYellow,
+      brightBlue,
+      brightMagenta,
+      brightCyan
     } = this.colors;
-    
+
     // Frame 1: Circle formation
     this.frames.push(`
 ${brightCyan}${bright}    ╔═══════════════════════════╗${reset}
@@ -207,10 +222,10 @@ ${brightMagenta}${bright}    ╚════════════════
 
   start(duration = null) {
     if (this.isRunning) return;
-    
+
     this.isRunning = true;
     this.showFrame(); // Show first frame immediately
-    
+
     this.intervalId = setInterval(() => {
       this.showFrame();
     }, 400); // Show each frame for 0.4 seconds (~3.6s total cycle)
@@ -227,13 +242,13 @@ ${brightMagenta}${bright}    ╚════════════════
 
   stop() {
     if (!this.isRunning) return;
-    
+
     this.isRunning = false;
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
-    
+
     // Show a clean final frame
     this.clearScreen();
     console.log(`
@@ -242,7 +257,7 @@ ${this.colors.brightCyan}${this.colors.bright}    ║${this.colors.reset}      $
 ${this.colors.brightCyan}${this.colors.bright}    ║${this.colors.reset}     ${this.colors.brightGreen}ready to code!${this.colors.reset}     ${this.colors.brightCyan}${this.colors.bright}║${this.colors.reset}
 ${this.colors.brightCyan}${this.colors.bright}    ╚═══════════════════════════╝${this.colors.reset}
 `);
-    
+
     return this;
   }
 

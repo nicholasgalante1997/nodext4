@@ -71,7 +71,7 @@ abstract class AbstractSuperBlock {
     this.bytes = new Uint8Array(this.buffer);
   }
 
-  get size (): number {
+  get size(): number {
     return this.buffer.byteLength;
   }
 
@@ -788,7 +788,7 @@ abstract class AbstractSuperBlock {
   }
 
   set blocksCount(value: bigint) {
-    this.blocksCountLo = Number(value & 0xFFFFFFFFn);
+    this.blocksCountLo = Number(value & 0xffffffffn);
     this.blocksCountHi = Number(value >> 32n);
   }
 
@@ -875,42 +875,41 @@ class SuperBlock extends AbstractSuperBlock implements AbstractSuperBlock {
   }
 
   validate(): boolean {
-      const size = this.buffer.byteLength;
-      if (size !== AbstractSuperBlock.SUPERBLOCK_SIZE) {
-        return false;
-      }
+    const size = this.buffer.byteLength;
+    if (size !== AbstractSuperBlock.SUPERBLOCK_SIZE) {
+      return false;
+    }
 
-      /**
-       * s_magic
-       * Check that magic number is correct
-       */
-      if (this.magic !== AbstractSuperBlock.EXT4_SUPER_MAGIC) {
-        return false;
-      }
+    /**
+     * s_magic
+     * Check that magic number is correct
+     */
+    if (this.magic !== AbstractSuperBlock.EXT4_SUPER_MAGIC) {
+      return false;
+    }
 
-      /**
-       * s_inodes_count
-       * Check that inodes count is a valid number greater than 0
-       */
-      if (this.inodesCount <= 0) {
-        return false;
-      }
+    /**
+     * s_inodes_count
+     * Check that inodes count is a valid number greater than 0
+     */
+    if (this.inodesCount <= 0) {
+      return false;
+    }
 
-      /** 
-       * s_blocks_count_lo
-       * Check that blocks count is a valid number greater than 0
-       */
-      if (this.blocksCountLo <= 0) {
-        return false;
-      }
+    /**
+     * s_blocks_count_lo
+     * Check that blocks count is a valid number greater than 0
+     */
+    if (this.blocksCountLo <= 0) {
+      return false;
+    }
 
-      return true;
+    return true;
   }
 
-  write<Device extends fs.FileHandle>(device: Device): boolean { return false; } // TODO()
+  write<Device extends fs.FileHandle>(device: Device): boolean {
+    return false;
+  } // TODO()
 }
 
-export {
-  SuperBlock,
-  AbstractSuperBlock
-}
+export { SuperBlock, AbstractSuperBlock };

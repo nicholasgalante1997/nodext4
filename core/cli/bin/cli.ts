@@ -17,7 +17,7 @@ async function loop() {
     const input = await prompt(chalk.bold(chalk.blueBright('✨ (nodext4)> ')));
     const result = handleInput(input);
     if (result.shouldEnd) {
-      /** 
+      /**
        * Close processes
        */
       console.log(chalk.bold(chalk.red('Exiting...')));
