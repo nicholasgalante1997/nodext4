@@ -1,3 +1,6 @@
+import fs from 'fs/promises';
+import type { SuperblockMetadata } from './types';
+
 /**
  * @abstract
  * @class AbstractSuperBlock
@@ -68,19 +71,16 @@ abstract class AbstractSuperBlock {
     this.bytes = new Uint8Array(this.buffer);
   }
 
+  get size (): number {
+    return this.buffer.byteLength;
+  }
+
   /**
    * Parse raw buffer data into structured superblock fields
    * This method should be implemented by concrete classes to handle
    * version-specific parsing logic
    */
-  abstract parse(): void;
-
-  /**
-   * Serialize the current superblock state back to the buffer
-   * This method should be implemented by concrete classes to handle
-   * version-specific serialization logic
-   */
-  abstract serialize(): void;
+  abstract parse(): SuperblockMetadata;
 
   /**
    * Validate the superblock for consistency and correctness
@@ -89,17 +89,27 @@ abstract class AbstractSuperBlock {
    */
   abstract validate(): boolean;
 
+  /**
+   * Write the superblock data to a device or a storage medium,
+   * typically a file or block device.
+   * This method should handle any necessary endianness conversions
+   * and ensure the data is correctly formatted for the target medium.
+   * @param device The target device or medium to write the superblock to
+   * @returns true if write was successful, false otherwise
+   */
+  abstract write<Device extends fs.FileHandle>(device: Device): boolean;
+
   // ===== Core filesystem parameters (offsets 0x00 - 0x5F) =====
 
   /**
    * Total number of inodes in the filesystem
    * Offset: 0x00, Size: 4 bytes
-   * 
+   *
    * Sidenote: In ext4, non journal byte ordering is LITTLE_ENDIAN.
-   * 
+   *
    * We can index 4 bytes from the offset (0x00) by using getUint32
    * with little-endian flag set to true.
-   * 
+   *
    * which will give us a 32 bit unsigned integer,
    * or 4 bytes of data.
    */
@@ -770,6 +780,18 @@ abstract class AbstractSuperBlock {
     this.dataview.setUint32(0x158, value, true);
   }
 
+  // Combined 64-bit value
+  get blocksCount(): bigint {
+    const lo = BigInt(this.blocksCountLo);
+    const hi = BigInt(this.blocksCountHi);
+    return (hi << 32n) + lo;
+  }
+
+  set blocksCount(value: bigint) {
+    this.blocksCountLo = Number(value & 0xFFFFFFFFn);
+    this.blocksCountHi = Number(value >> 32n);
+  }
+
   /**
    * Minimum inode size that can be allocated
    * Offset: 0x15C, Size: 2 bytes
@@ -838,4 +860,57 @@ abstract class AbstractSuperBlock {
   set mmpBlock(value: bigint) {
     this.dataview.setBigUint64(0x168, value, true);
   }
+}
+
+class SuperBlock extends AbstractSuperBlock implements AbstractSuperBlock {
+  constructor(buffer?: ArrayBuffer) {
+    super(buffer);
+  }
+
+  parse(): SuperblockMetadata {
+    return {
+      s_inodes_count: this.inodesCount,
+      s_blocks_count_lo: this.blocksCountLo
+    };
+  }
+
+  validate(): boolean {
+      const size = this.buffer.byteLength;
+      if (size !== AbstractSuperBlock.SUPERBLOCK_SIZE) {
+        return false;
+      }
+
+      /**
+       * s_magic
+       * Check that magic number is correct
+       */
+      if (this.magic !== AbstractSuperBlock.EXT4_SUPER_MAGIC) {
+        return false;
+      }
+
+      /**
+       * s_inodes_count
+       * Check that inodes count is a valid number greater than 0
+       */
+      if (this.inodesCount <= 0) {
+        return false;
+      }
+
+      /** 
+       * s_blocks_count_lo
+       * Check that blocks count is a valid number greater than 0
+       */
+      if (this.blocksCountLo <= 0) {
+        return false;
+      }
+
+      return true;
+  }
+
+  write<Device extends fs.FileHandle>(device: Device): boolean { return false; } // TODO()
+}
+
+export {
+  SuperBlock,
+  AbstractSuperBlock
 }
