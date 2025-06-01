@@ -870,7 +870,10 @@ class SuperBlock extends AbstractSuperBlock implements AbstractSuperBlock {
   parse(): SuperblockMetadata {
     return {
       s_inodes_count: this.inodesCount,
-      s_blocks_count_lo: this.blocksCountLo
+      s_blocks_count_lo: this.blocksCountLo,
+      s_r_blocks_count_lo: this.reservedBlocksCount,
+      s_free_blocks_count_lo: this.freeBlocksCount,
+      s_free_inodes_count: this.freeInodesCount,
     };
   }
 

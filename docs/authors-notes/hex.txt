@@ -1,0 +1,8 @@
+Hexadecimal: 0 1 2 3 4 5 6 7 8 9  A  B  C  D  E  F
+Decimal:     1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+
+Hexadecimal typically will start with 0x
+
+0x04
+
+0 0 0 0    0 0 0 0     0 0 0 0    

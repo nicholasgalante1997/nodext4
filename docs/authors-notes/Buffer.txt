@@ -1,0 +1,2 @@
+Read more into Node.js Buffers/Blobs and how we can use them for 
+creating more performant thread safe operations on the fs.

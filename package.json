@@ -19,6 +19,7 @@
     "packages/**"
   ],
   "scripts": {
+    "docs:node-js": "bunx serve docs/node-js",
     "format": "prettier --write \"**/*.{js,ts}\"",
     "clean": "turbo run clean",
     "check-types": "turbo run check-types",
