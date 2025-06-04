@@ -1,15 +1,26 @@
 import chalk from 'chalk';
+import { args } from '../lib/args';
 import { TextGradient } from '../lib/gui';
 import { prompt } from '../lib/prompt';
 import { handleInput } from '../lib/input';
 
 const helpMessage = `
+  ${chalk.bold(chalk.cyan('What is this?'))}
 
-    Nodext4 is an ext4 compliant filesystem for linux based machines and arbitrary block devices.
-    You can do things with it that you can normally do with filesystems, such as create them, mount them to block devices, add files, create directories, the whole shablagoo.
-    If you're wondering why someone would do this, so am I.
+  ${chalk.italic('This is an attempt to implement, in parts, the linux virtual file system in Bun.js.')}
+
+  ${chalk.bold(chalk.cyan('What can I do with this?'))}
+
+  ${chalk.italic(`You can
+    
+    - Mount and unmount filesystems
+    - Read and Write Files
+    - Copy files between other mounted filesystems
+    - Probably more!
+  `)}
 
     ${chalk.italic(chalk.underline('for help, type .help'))}
+
 `;
 
 async function loop() {
@@ -21,25 +32,34 @@ async function loop() {
        * Close processes
        */
       console.log(chalk.bold(chalk.red('Exiting...')));
-      setTimeout(() => {
-        console.clear();
-        process.exit(0);
-      }, 1400);
+
+      await new Promise<void>((resolve, _reject) => {
+        setTimeout(() => {
+          console.clear();
+          resolve();
+        }, 1400);
+      }).then(() => process.exit(0));
     }
   }
 }
 
+async function runSplash() {
+  console.log(chalk.bold(new TextGradient().getTerminalGradientText()));
+  console.log(helpMessage);
+  await prompt(chalk.gray(chalk.bold('[Press Enter to Continue]')), { allowEmpty: true });
+  console.clear();
+}
+
+function shouldRunSplash() {
+  let $args = args();
+  return !($args.includes('--no-splash') || $args.includes('-q'))
+}
+
 async function main() {
   console.clear();
-
-  console.log(chalk.bold(new TextGradient().getTerminalGradientText()));
-
-  console.log(helpMessage);
-
-  await prompt(chalk.gray(chalk.bold('[Press Enter to Continue]')), { allowEmpty: true });
-
-  console.clear();
-
+  if (shouldRunSplash()) {
+    await runSplash();
+  }
   await loop();
 }
 

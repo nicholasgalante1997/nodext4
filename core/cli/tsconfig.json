@@ -1,3 +1,10 @@
 {
-    "extends": ""
+    "extends": "@nodext4/typescript-configs/typescript/bun.tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "./",
+        "baseUrl": "./",
+        "paths": {
+          "@/*": ["./src/*"]
+        }
+    }
 }
