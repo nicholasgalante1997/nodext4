@@ -1,6 +1,6 @@
 import { ByteConstants } from '../constants/bytes.js';
 
-const BYTES_PER_INODE_RATIO = 16 * ByteConstants.KB;
+export const BYTES_PER_INODE_RATIO = 16 * ByteConstants.KB;
 
 /**
  * Calculates the number of inodes based on the filesystem size and bytes per inode ratio
@@ -18,4 +18,8 @@ const BYTES_PER_INODE_RATIO = 16 * ByteConstants.KB;
  */
 export function calcInodeCount(filesystemSizeInBytes,  bytesPerInodeRatio = BYTES_PER_INODE_RATIO) {
     return Math.floor(filesystemSizeInBytes / bytesPerInodeRatio);
+}
+
+export function calcInodesPerGroup(inodeCount, numOfBlockGroups) {
+    return Math.floor(inodeCount / numOfBlockGroups);
 }

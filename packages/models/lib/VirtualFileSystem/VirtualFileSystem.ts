@@ -1,35 +1,10 @@
-import type { IDirectoryEntry, IDirectoryOperations, IFileHandle, IFileOperations, IFileStats, ISuperBlock, ISuperOperations, InodeOperations, FileDescriptor, FileMode } from '../types';
-
-/**
- * File system type definition - similar to Linux kernel's file_system_type struct
- */
-interface FileSystemType {
-  name: string;
-  flags: number;
-  mount: (source: string, target: string, options?: Record<string, any>) => Promise<FileSystemInstance>;
-  killSuperblock?: (instance: FileSystemInstance) => Promise<void>;
-}
-
-/**
- * A mounted file system instance
- */
-interface FileSystemInstance {
-  superBlock: ISuperBlock;
-  superOps: ISuperOperations;
-  fileOps: IFileOperations;
-  inodeOps: InodeOperations;
-  dirOps: IDirectoryOperations;
-  mountPoint: string;
-  source: string;
-  options: Record<string, any>;
-}
-
+import type { IDirectoryEntry, IDirectoryOperations, IFileHandle, IFileOperations, IFileStats, ISuperBlock, ISuperOperations, InodeOperations, FileDescriptor, FileMode, FileSystemInstance, IFileSystemType } from '../types';
 /**
  * VFS Layer - manages registered file systems and provides the unified interface
  * This is similar to the Linux kernel's VFS layer
  */
 class LinuxVFS {
-  private registeredFileSystems = new Map<string, FileSystemType>();
+  private registeredFileSystems = new Map<string, IFileSystemType>();
   private mountedFileSystems = new Map<string, FileSystemInstance>();
   private openFiles = new Map<number, { instance: FileSystemInstance; handle: IFileHandle }>();
   private nextFd = 3; // Start after stdin, stdout, stderr
@@ -39,7 +14,7 @@ class LinuxVFS {
   /**
    * Register a file system type (like register_filesystem() in Linux)
    */
-  registerFileSystem(fsType: FileSystemType): void {
+  registerFileSystem(fsType: IFileSystemType): void {
     this.registeredFileSystems.set(fsType.name, fsType);
   }
 

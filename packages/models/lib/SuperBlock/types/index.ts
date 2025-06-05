@@ -42,3 +42,15 @@ export interface SuperblockMetadata {
 
   
 }
+
+export enum SuperBlockErrorPolicy {
+  CONTINUE = 0x01,
+  REMOUNT_RO = 0x02,
+  PANIC = 0x03
+}
+
+export enum SuperBlockSuperState {
+  CLEANLY_UNMOUNTED = 0x0001,
+  ERROR_FS = 0x0002,
+  ORPHAN_FS = 0x0004
+}

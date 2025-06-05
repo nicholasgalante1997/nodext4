@@ -1,4 +1,5 @@
 export * from './block.js';
+export * from './bytes.js';
 export * from './device.js';
 export * from './inode.js';
 export * from './log.js';

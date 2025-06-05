@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import { SuperBlockSuperState } from './types';
 import type { SuperblockMetadata } from './types';
 
 /**
@@ -195,6 +196,7 @@ abstract class AbstractSuperBlock {
   }
 
   /**
+   * NOTE this is eqeqeq to s_log_cluster_size
    * Fragment size as a power of 2, relative to 1024 bytes
    * Note: Fragments are not implemented in ext4, so this should equal logBlockSize
    * Offset: 0x1C, Size: 4 bytes

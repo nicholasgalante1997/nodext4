@@ -1,6 +1,5 @@
+import type { Bytes } from './Bytes';
 import type { IFileHandle } from "./IFileHandle";
-
-type Bytes = ArrayBufferLike | Uint8Array | Uint16Array | Uint32Array | DataView<ArrayBufferLike> | Buffer<ArrayBufferLike>;
 
 /**
  * File operations - equivalent to Linux kernel's file_operations struct
