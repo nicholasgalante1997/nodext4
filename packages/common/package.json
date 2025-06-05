@@ -20,10 +20,14 @@
   "devDependencies": {
     "@nodext4/typescript-configs": "workspace:*",
     "@types/bun": "latest",
+    "@types/bytes": "^3.1.5",
     "@types/debug": "^4.1.12"
   },
   "peerDependencies": {
     "debug": "^4.4.1",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "bytes": "^3.1.2"
   }
 }

@@ -1,9 +1,11 @@
+export type { Bytes } from './Bytes';
 export type { IDirectoryEntry } from './IDirEnt';
 export type { IDirectoryOperations } from './IDirOps';
 export type { FileDescriptor, FileMode } from './IFile';
 export type { IFileHandle } from './IFileHandle';
 export type { IFileOperations } from './IFileOps';
 export type { IFileStats } from './IFileStats';
+export type { FileSystemInstance, IFileSystemType } from './IFileSystemType';
 export type { InodeOperations } from './InodeOps';
 export type { ISuperBlock } from './ISuperBlock';
 export type { ISuperOperations } from './ISuperOps';
