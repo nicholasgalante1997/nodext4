@@ -23,7 +23,7 @@
     "format": "prettier --write \"**/*.{js,ts}\"",
     "clean": "turbo run clean",
     "check-types": "turbo run check-types",
-    "build:workspace": "turbo run build",
+    "build": "turbo run build",
     "test": "bun test"
   },
   "devDependencies": {

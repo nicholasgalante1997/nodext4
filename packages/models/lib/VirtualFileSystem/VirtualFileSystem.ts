@@ -3,7 +3,7 @@ import type { IDirectoryEntry, IDirectoryOperations, IFileHandle, IFileOperation
  * VFS Layer - manages registered file systems and provides the unified interface
  * This is similar to the Linux kernel's VFS layer
  */
-class LinuxVFS {
+abstract class AbstractVirtualFileSystem {
   private registeredFileSystems = new Map<string, IFileSystemType>();
   private mountedFileSystems = new Map<string, FileSystemInstance>();
   private openFiles = new Map<number, { instance: FileSystemInstance; handle: IFileHandle }>();
@@ -37,45 +37,11 @@ class LinuxVFS {
   /**
    * Mount a file system
    */
-  async mount(fsType: string, source: string, target: string, options?: Record<string, any>): Promise<void> {
-    const fs = this.registeredFileSystems.get(fsType);
-    if (!fs) {
-      throw new Error(`File system type '${fsType}' not registered`);
-    }
-
-    if (this.mountedFileSystems.has(target)) {
-      throw new Error(`Target '${target}' already mounted`);
-    }
-
-    const instance = await fs.mount(source, target, options);
-    this.mountedFileSystems.set(target, instance);
-  }
-
+  abstract mount(fsType: string, source: string, target: string, options?: Record<string, any>): Promise<void>;
   /**
    * Unmount a file system
    */
-  async umount(target: string, force = false): Promise<void> {
-    const instance = this.mountedFileSystems.get(target);
-    if (!instance) {
-      throw new Error(`No file system mounted at '${target}'`);
-    }
-
-    // Close any open files from this filesystem
-    for (const [fd, fileInfo] of this.openFiles.entries()) {
-      if (fileInfo.instance === instance) {
-        await fileInfo.instance.fileOps.close(fileInfo.handle);
-        this.openFiles.delete(fd);
-      }
-    }
-
-    // Call filesystem-specific cleanup
-    const fsType = this.registeredFileSystems.get(instance.superBlock.fsType);
-    if (fsType?.killSuperblock) {
-      await fsType.killSuperblock(instance);
-    }
-
-    this.mountedFileSystems.delete(target);
-  }
+  abstract umount(target: string, force?: boolean): Promise<void>;
 
   // === Path Resolution ===
 
