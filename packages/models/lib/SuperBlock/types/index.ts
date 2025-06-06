@@ -54,3 +54,16 @@ export enum SuperBlockSuperState {
   ERROR_FS = 0x0002,
   ORPHAN_FS = 0x0004
 }
+
+export enum SuperBlockCreatorOS {
+  LINUX = 0,
+  HURD = 1,
+  MASIX = 2,
+  FREEBSD = 3,
+  LITES = 4
+}
+
+export enum SuperBlockExt4RevisionLevel {
+  ORIGINAL = 0,
+  DYN_INODES_REVISION = 1
+}
