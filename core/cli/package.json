@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@nodext4/common-modules": "workspace:*",
+    "@nodext4/models": "workspace:*",
     "chalk": "^5.4.1"
   }
 }

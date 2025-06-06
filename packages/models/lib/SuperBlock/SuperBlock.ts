@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import { SuperBlockSuperState } from './types';
 import type { SuperblockMetadata } from './types';
 
 /**
@@ -918,3 +917,5 @@ class SuperBlock extends AbstractSuperBlock implements AbstractSuperBlock {
 }
 
 export { SuperBlock, AbstractSuperBlock };
+export type {} from './types';
+export { createSuperblock } from './utils';

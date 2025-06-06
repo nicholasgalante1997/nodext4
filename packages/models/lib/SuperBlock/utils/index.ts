@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import {
     BlockSizeInBytes as DefaultBlockSizeInBytes,
     BYTES_PER_INODE_RATIO,
@@ -12,17 +13,24 @@ import {
     ByteConstants
 } from '@nodext4/common-modules';
 import { AbstractSuperBlock, SuperBlock } from "../SuperBlock";
-import { SuperBlockErrorPolicy, SuperBlockSuperState } from '../types';
+import { SuperBlockErrorPolicy, SuperBlockSuperState, SuperBlockCreatorOS, SuperBlockExt4RevisionLevel } from '../types';
 
 interface CreateSuperBlockOptions {
     filesystemSize: number | string;
+    targetMountPath: string;
+    lastMountPath?: string;
+    blockGroupNumber?: number;
     blockSize?: number | string;
     bytesPerInode?: number;
     totalInodes?: number | string;
+    uuid?: string;
+    volumeName?: string;
     fsck?: {
         forceMountCount?: number;
         forceInodeCount?: number;
         forceBlockCount?: number;
+        forceLastCheck?: number;
+        forceCheckInterval?: number; // Seconds
     }
 }
 
@@ -98,6 +106,33 @@ function getMountCountFromOptions(options: CreateSuperBlockOptions) {
     return null;
 }
 
+function getCheckIntervalFromOptions(options: CreateSuperBlockOptions) {
+    const { fsck } = options;
+    if (fsck && fsck.forceCheckInterval) {
+        return fsck.forceCheckInterval;
+    }
+    return null;
+}
+
+function getLastCheckFromOptions(options: CreateSuperBlockOptions) {
+    const { fsck } = options;
+    if (fsck && fsck.forceLastCheck) {
+        return fsck.forceLastCheck;
+    }
+    return null;
+}
+
+function getBlockGroupNumberFromOptions(options: CreateSuperBlockOptions) {
+    const { blockGroupNumber } = options;
+    if (blockGroupNumber) {
+        return blockGroupNumber;
+    }
+    return null;
+}
+
+const uuidToBytes = (uuid: string): Uint8Array => 
+  new Uint8Array(Buffer.from(uuid.replace(/-/g, ''), 'hex'));
+
 export function createSuperblock(options: CreateSuperBlockOptions): SuperBlock {
 
     const _fs_size = getFilesystemSizeFromOptions(options);
@@ -107,8 +142,11 @@ export function createSuperblock(options: CreateSuperBlockOptions): SuperBlock {
     const _fs_num_of_block_groups = calcNumOfBlockGroups(_fs_size, _fs_block_size);
     const _fs_bytes_per_inode = getBytesPerInodeFromOptions(options);
     const _fs_inodes_per_group = calcInodesPerGroup(_fs_size, _fs_num_of_block_groups);
+    const _fs_sb_block_group_number = getBlockGroupNumberFromOptions(options) || 0;
 
     const _fsck_prov_force_mount_count = getMountCountFromOptions(options) || 0;
+    const _fsck_prov_force_last_check = getLastCheckFromOptions(options) || Date.now();
+    const _fsck_prov_force_check_interval = getCheckIntervalFromOptions(options) || (60 * 60 * 24 * 7 * 12); // 3mos in seconds
 
     const sb = new SuperBlock();
 
@@ -162,5 +200,39 @@ export function createSuperblock(options: CreateSuperBlockOptions): SuperBlock {
      */
     sb.minorRevLevel = 0;
 
+    sb.lastCheck = _fsck_prov_force_last_check;
+
+    sb.checkInterval = _fsck_prov_force_check_interval;
+
+    sb.creatorOs = SuperBlockCreatorOS.LINUX;
+
+    sb.revLevel = SuperBlockExt4RevisionLevel.DYN_INODES_REVISION;
+
+    sb.defaultReservedUid = 0;
+    sb.defaultReservedGid = 0;
+
+    sb.firstInode; // TODO figure out how we determine the first non reserved inode
+
+    sb.inodeSize = 256;
+
+    sb.featureCompat = 0x0002 | 0x0040;
+    sb.featureIncompat = 0x0000;
+    sb.featureRoCompat  = 0x0000;
+
+    sb.blockGroupNr = _fs_sb_block_group_number;
+
+    sb.uuid = uuidToBytes(options?.uuid || randomUUID());
+    sb.volumeName = options?.volumeName || 'JohtoFS';
+
+    sb.lastMounted = options.lastMountPath || options.targetMountPath;
+
+    sb.algorithmUsageBitmap = 0x00;
+
+    sb.preallocBlocks = 0;
+    sb.preallocDirBlocks = 0;
+
+    sb.reservedGdtBlocks = 0; // Figure out if we do want to reserve GDT Blocks for future expansion
+
+    
     return sb;
 }
